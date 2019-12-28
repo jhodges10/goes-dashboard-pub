@@ -138,7 +138,7 @@ def create_video_loop(length=48):
     with open("./logfile.log", "a") as output:
         try:
             subprocess.check_call(
-                """docker run -v $(pwd):$(pwd) -w $(pwd) jrottenberg/ffmpeg:3.2-scratch -stats -framerate 8 -i images/img%03d.jpg -c:v libx264 -vf scale=2048:-1 -pix_fmt yuv420p temp/{}""".format(movie_name),
+                """docker run -v $(pwd):$(pwd) -w $(pwd) jrottenberg/ffmpeg:3.2-scratch -y -stats -framerate 8 -i images/img%03d.jpg -c:v libx264 -vf scale=2048:-1 -pix_fmt yuv420p temp/{}""".format(movie_name),
                 shell=True, stdout=output, stderr=output
             )
         except subprocess.CalledProcessError as e:
@@ -184,5 +184,5 @@ def list_generator(base_url, starting_filename, extracted_tstamp, length=48):
 
 
 if __name__ == "__main__":
-    backfill_images(length=12)
-    create_video_loop(length=12)
+    backfill_images(length=144)
+    create_video_loop(length=144)
