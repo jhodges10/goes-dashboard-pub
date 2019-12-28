@@ -46,7 +46,7 @@ export default class WeatherWidget extends React.Component {
 
   getWeather() {
     // Construct the API url to call
-    const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${this.state.latitude}&lon=${this.state.longitude}&units=imperial&appid=8b5c6efb59eeda286b6a1ddfb26a146f`;
+    const url = `https://api.openweathermap.org/data/2.5/forecast?lat=${this.state.latitude}&lon=${this.state.longitude}&units=imperial&appid=8b5c6efb59efb26a146feda286b6a1dd`;
 
     // Call the API, and set the state of the weather forecast
     fetch(url)

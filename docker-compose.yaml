@@ -70,52 +70,8 @@ services:
     volumes:
       - ./redis:/data
 
-  # elasticsearch:
-  #   build:
-  #     context: docker-elk/elasticsearch/
-  #     args:
-  #       ELK_VERSION: $ELK_VERSION
-  #   volumes:
-  #     - ./docker-elk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
-  #     - esdata1:/usr/share/elasticsearch/data:rw
-  #   ports:
-  #     - "9200:9200"
-  #     - "9300:9300"
-  #   environment:
-  #     ES_JAVA_OPTS: "-Xmx256m -Xms256m"
-  #     ELASTIC_PASSWORD: changeme
-  # logstash:
-  #   build:
-  #     context: docker-elk/logstash/
-  #     args:
-  #       ELK_VERSION: $ELK_VERSION
-  #   volumes:
-  #     - ./docker-elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
-  #     - ./docker-elk/logstash/pipeline:/usr/share/logstash/pipeline:ro
-  #   ports:
-  #     - "5959:5959"
-  #     - "9600:9600"
-  #   environment:
-  #     LS_JAVA_OPTS: "-Xmx256m -Xms256m"
-  #   depends_on:
-  #     - elasticsearch
-  # kibana:
-  #   build:
-  #     context: docker-elk/kibana/
-  #     args:
-  #       ELK_VERSION: $ELK_VERSION
-  #   volumes:
-  #     - ./docker-elk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
-  #   ports:
-  #     - "5601:5601"
-  #   depends_on:
-  #     - elasticsearch
-
 volumes:
-  esdata1:
-    driver: local
   dashboard-data:
     driver: local
-  portainer_data:
   minio_data:
     driver: local
