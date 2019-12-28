@@ -16,12 +16,16 @@ This project uses the following technologies:
 - Google Maps API
 - OpenWeatherMap API
 
-
 # WARNING
 
 I haven't yet moved the APPID for the openweathermap API into a .env. For this release, I have just mangled that app id so I don't leak my credentials. You will need to replace it in order for the geolocation to work.
 
 You'll also need to turn `.env-sample` into `.env` and then get your own Google Maps API key to put in there. The example one will not work.
+
+
+# Basic Usage
+
+If you just want to use this code to download images, you should `cd` into `/server/` install the requirements with `pip install -r requirements.txt` and then make sure you're running python3 (usage of f-strings). Then just run `python3 basic_image_tool.py` and it will grab the last 24 hours worth of imagery and create a video of it!
 
 
 # TODO
