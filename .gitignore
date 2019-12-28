@@ -1,0 +1,12 @@
+*.pyc
+*.rdb
+.DS_Store
+__pycache__/
+node_modules/
+
+*.jpeg
+*.jpg
+*.log
+
+.env
+

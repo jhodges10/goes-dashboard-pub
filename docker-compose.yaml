@@ -1,0 +1,121 @@
+version: "3.3"
+services:
+  web:
+    build:
+      context: client/
+      dockerfile: Dockerfile-production
+    environment:
+      - GRAPHQL_ENDPOINT=graphql
+      - NODE_ENV=production
+    volumes:
+      - "./client/:/app"
+      - "/app/node_modules"
+    ports:
+      - "80:80"
+
+  minio:
+    image: minio/minio:RELEASE.2019-08-07T01-59-21Z
+    volumes:
+      - minio_data:/data:rw
+    ports:
+      - "9000:9000"
+    environment:
+      MINIO_ACCESS_KEY: minio
+      MINIO_SECRET_KEY: minio123
+      MINIO_DOMAIN: dashboard.jeffhq.com
+    command: server /data
+
+  # createbuckets:
+  #   image: minio/mc
+  #   depends_on:
+  #     - minio
+  #   entrypoint: >
+  #     /bin/sh -c "
+  #     /usr/bin/mc config host add myminio http://minio:9000 minio minio123;
+  #     /usr/bin/mc rm -r --force myminio/sat-images;
+  #     /usr/bin/mc mb myminio/sat-images;
+  #     /usr/bin/mc policy --insecure set public myminio/sat-images;
+  #     exit 0;
+  #     "
+
+  database:
+    image: postgres:latest
+    environment:
+      - PG_TRUST_LOCALNET=true
+      - POSTGRES_USER=dashboard
+      - POSTGRES_PASSWORD=dashboard
+      - POSTGRES_DB=dashboard
+    ports:
+      - "5500:5432"
+    volumes:
+      - dashboard-data:/var/lib/postgresql/data
+
+  graphql:
+    image: hasura/graphql-engine:v1.0.0-beta.10
+    ports:
+      - "8080:8080"
+    depends_on:
+      - "database"
+    restart: always
+    environment:
+      HASURA_GRAPHQL_DATABASE_URL: postgres://dashboard:dashboard@database:5432/dashboard
+      HASURA_GRAPHQL_ENABLE_CONSOLE: "true" # set to "false" to disable console
+      ## uncomment next line to set an admin secret
+      # HASURA_GRAPHQL_ADMIN_SECRET: myadminsecretkey
+
+  redis:
+    image: redis:alpine
+    ports:
+      - 6379
+    volumes:
+      - ./redis:/data
+
+  # elasticsearch:
+  #   build:
+  #     context: docker-elk/elasticsearch/
+  #     args:
+  #       ELK_VERSION: $ELK_VERSION
+  #   volumes:
+  #     - ./docker-elk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro
+  #     - esdata1:/usr/share/elasticsearch/data:rw
+  #   ports:
+  #     - "9200:9200"
+  #     - "9300:9300"
+  #   environment:
+  #     ES_JAVA_OPTS: "-Xmx256m -Xms256m"
+  #     ELASTIC_PASSWORD: changeme
+  # logstash:
+  #   build:
+  #     context: docker-elk/logstash/
+  #     args:
+  #       ELK_VERSION: $ELK_VERSION
+  #   volumes:
+  #     - ./docker-elk/logstash/config/logstash.yml:/usr/share/logstash/config/logstash.yml:ro
+  #     - ./docker-elk/logstash/pipeline:/usr/share/logstash/pipeline:ro
+  #   ports:
+  #     - "5959:5959"
+  #     - "9600:9600"
+  #   environment:
+  #     LS_JAVA_OPTS: "-Xmx256m -Xms256m"
+  #   depends_on:
+  #     - elasticsearch
+  # kibana:
+  #   build:
+  #     context: docker-elk/kibana/
+  #     args:
+  #       ELK_VERSION: $ELK_VERSION
+  #   volumes:
+  #     - ./docker-elk/kibana/config/kibana.yml:/usr/share/kibana/config/kibana.yml:ro
+  #   ports:
+  #     - "5601:5601"
+  #   depends_on:
+  #     - elasticsearch
+
+volumes:
+  esdata1:
+    driver: local
+  dashboard-data:
+    driver: local
+  portainer_data:
+  minio_data:
+    driver: local
